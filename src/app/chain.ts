@@ -1,4 +1,4 @@
 import { defineChain } from "thirdweb";
+import { polygonAmoy } from "thirdweb/chains";
 
-// Replace <chain_id> with the chain id of your chain
-export const chain = defineChain( "<chain_id>" );
+export const chain = defineChain( polygonAmoy );
