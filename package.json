@@ -1,3 +1,11 @@
-"scripts": {
-  "start": "lite-server"
-}
+{
+  "nombre": "YOUTUBE-ERC20-STAKING",
+  "versión": "1.0.0",
+  "description": "Mi increíble proyecto",
+  "principal": "index.js",
+  "guiones": {
+  "inicio": "nodo index.js"
+  },
+  "autor": "Tu nombre",
+  "licencia": "MIT"
+  }
