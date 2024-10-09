@@ -1,11 +1,22 @@
 {
-  "nombre": "YOUTUBE-ERC20-STAKING",
-  "versión": "1.0.0",
-  "description": "Mi increíble proyecto",
-  "principal": "index.js",
-  "guiones": {
-  "inicio": "nodo index.js"
+  "name": "erc20staking",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "autor": "Tu nombre",
-  "licencia": "MIT"
+  "dependencies": {
+    "next": "^14.2.15",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "typescript": "^5"
   }
+}
