@@ -253,3 +253,4 @@ export const StakeToken = () => {
                             position: "fixed",
                             top: 0,
                             left: 0 
+                            
