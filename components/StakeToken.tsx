@@ -15,8 +15,9 @@ export const StakeToken = () => {
 
     const [stakeAmount, setStakeAmount] = useState(0);
     const [stakingState, setStakingState] = useState("init");
+    const [isStaking, setIsStaking] = useState(false);
     const [withdrawAmount, setWithdrawAmount] = useState(0);
-    const [isWithdrawing, setIsWithdrawing] = useState(false);
+    const [isWithdrawing, setIsWithdrawing] = useState(false); // Mantener esta variable
 
     const { data: stakingTokenBalance, isLoading: loadingStakeTokenBalance, refetch: refetchStakingTokenBalance } = useReadContract(
         balanceOf,
@@ -53,8 +54,7 @@ export const StakeToken = () => {
         const interval = setInterval(() => {
             refetchData();
         }, 10000);
-
-        return () => clearInterval(interval); // Limpiar el intervalo al desmontar
+        return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
     }, []);
 
     const refetchData = () => {
@@ -115,6 +115,7 @@ export const StakeToken = () => {
                         <div>
                             <button
                                 onClick={() => {
+                                    setIsStaking(false);
                                     setStakeAmount(0);
                                     setStakingState("init");
                                 }}
@@ -155,6 +156,8 @@ export const StakeToken = () => {
                                             setStakeAmount(0);
                                             setStakingState("init");
                                             refetchData();
+                                            refetchStakingTokenBalance();
+                                            setIsStaking(false);
                                         }}
                                     >Stake</TransactionButton>
                                 </>
@@ -166,7 +169,7 @@ export const StakeToken = () => {
                         <div>
                             <button
                                 onClick={() => {
-                                    setIsWithdrawing(false);
+                                    setIsWithdrawing(false); // Esto es para cerrar la ventana de retiro
                                 }}
                             >Close</button>
                             <h3>Withdraw</h3>
@@ -177,16 +180,19 @@ export const StakeToken = () => {
                                 onChange={(e) => setWithdrawAmount(parseFloat(e.target.value))}
                             />
                             <TransactionButton
-                                transaction={() => (
-                                    prepareContractCall({
+                                transaction={() => {
+                                    setIsWithdrawing(true); // Cambiar el estado a retirando
+                                    return prepareContractCall({
                                         contract: STAKING_CONTRACT,
                                         method: "withdraw",
                                         params: [toWei(withdrawAmount.toString())],
-                                    })
-                                )}
+                                    });
+                                }}
                                 onTransactionConfirmed={() => {
                                     setWithdrawAmount(0);
                                     refetchData();
+                                    refetchStakingTokenBalance();
+                                    setIsWithdrawing(false); // Cambiar el estado a no retirando
                                 }}
                             >Withdraw</TransactionButton>
                         </div>
@@ -196,3 +202,4 @@ export const StakeToken = () => {
         </div>
     );
 };
+
