@@ -10,13 +10,11 @@ import { useEffect, useState } from "react";
 import { client } from "@/app/client";
 import { chain } from "@/app/chain";
 
-// Cambia aquí el nombre del componente
-export const StakeToken = () => { // Cambiado de Stake a StakeToken
+export const StakeToken = () => {
     const account = useActiveAccount();
 
     const [stakeAmount, setStakeAmount] = useState(0);
     const [stakingState, setStakingState] = useState("init");
-    const [isStaking, setIsStaking] = useState(false);
     const [withdrawAmount, setWithdrawAmount] = useState(0);
     const [isWithdrawing, setIsWithdrawing] = useState(false);
 
@@ -52,11 +50,11 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
     });
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
+        const interval = setInterval(() => {
             refetchData();
         }, 10000);
-        
-        return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar
+
+        return () => clearInterval(interval); // Limpiar el intervalo al desmontar
     }, []);
 
     const refetchData = () => {
@@ -94,8 +92,8 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                     {stakeInfo && (
                         <div>
                             <div>
-                                <p>Balance Staked: {stakeInfo[0] !== undefined ? toEther(stakeInfo[0]).toString() : "Loading..."}</p>
-                                <p>Reward Balance: {stakeInfo[1] !== undefined ? toEther(stakeInfo[1]).toString() : "Loading..."}</p>
+                                <p>Balance Staked: {toEther(stakeInfo[0]).toString()}</p>
+                                <p>Reward Balance: {toEther(stakeInfo[1]).toString()}</p>
                             </div>
                             <TransactionButton
                                 transaction={() => (
@@ -117,13 +115,12 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                         <div>
                             <button
                                 onClick={() => {
-                                    setIsStaking(false);
                                     setStakeAmount(0);
                                     setStakingState("init");
                                 }}
                             >Close</button>
                             <h3>Stake</h3>
-                            <p>Balance: {stakingTokenBalance !== undefined ? toEther(stakingTokenBalance) : "Loading..."}</p>
+                            <p>Balance: {toEther(stakingTokenBalance!)}</p>
                             {stakingState === "init" ? (
                                 <>
                                     <input
@@ -158,8 +155,6 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                                             setStakeAmount(0);
                                             setStakingState("init");
                                             refetchData();
-                                            refetchStakingTokenBalance();
-                                            setIsStaking(false);
                                         }}
                                     >Stake</TransactionButton>
                                 </>
@@ -192,8 +187,6 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                                 onTransactionConfirmed={() => {
                                     setWithdrawAmount(0);
                                     refetchData();
-                                    refetchStakingTokenBalance();
-                                    setIsWithdrawing(false);
                                 }}
                             >Withdraw</TransactionButton>
                         </div>
