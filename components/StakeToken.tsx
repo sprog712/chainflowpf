@@ -52,9 +52,11 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
     });
 
     useEffect(() => {
-        setInterval(() => {
+        const intervalId = setInterval(() => {
             refetchData();
         }, 10000);
+        
+        return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar
     }, []);
 
     const refetchData = () => {
@@ -75,26 +77,25 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                         client={client}
                         chain={chain}
                     />
-<div style={{
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    margin: "20px",
-}}>
-    {loadingStakeTokenBalance ? (
-        <p>Staking Token: {stakingTokenBalance !== undefined ? toEther(stakingTokenBalance) : "Loading..."}</p>
-    ) : null}
-    {loadingRewardTokenBalance ? (
-        <p>Reward Token: {rewardTokenBalance !== undefined ? toEther(rewardTokenBalance) : "Loading..."}</p>
-    ) : null}
-</div>
-
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        margin: "20px",
+                    }}>
+                        {loadingStakeTokenBalance ? (
+                            <p>Staking Token: {stakingTokenBalance !== undefined ? toEther(stakingTokenBalance) : "Loading..."}</p>
+                        ) : null}
+                        {loadingRewardTokenBalance ? (
+                            <p>Reward Token: {rewardTokenBalance !== undefined ? toEther(rewardTokenBalance) : "Loading..."}</p>
+                        ) : null}
+                    </div>
 
                     {stakeInfo && (
                         <div>
                             <div>
-                                <p>Balance Staked: {toEther(stakeInfo[0]).toString()}</p>
-                                <p>Reward Balance: {toEther(stakeInfo[1]).toString()}</p>
+                                <p>Balance Staked: {stakeInfo[0] !== undefined ? toEther(stakeInfo[0]).toString() : "Loading..."}</p>
+                                <p>Reward Balance: {stakeInfo[1] !== undefined ? toEther(stakeInfo[1]).toString() : "Loading..."}</p>
                             </div>
                             <TransactionButton
                                 transaction={() => (
@@ -122,7 +123,7 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                                 }}
                             >Close</button>
                             <h3>Stake</h3>
-                            <p>Balance: {toEther(stakingTokenBalance!)}</p>
+                            <p>Balance: {stakingTokenBalance !== undefined ? toEther(stakingTokenBalance) : "Loading..."}</p>
                             {stakingState === "init" ? (
                                 <>
                                     <input
@@ -173,7 +174,7 @@ export const StakeToken = () => { // Cambiado de Stake a StakeToken
                                     setIsWithdrawing(false);
                                 }}
                             >Close</button>
-                            <h3>Withraw</h3>
+                            <h3>Withdraw</h3>
                             <input
                                 type="number"
                                 placeholder="0.0"
