@@ -19,6 +19,7 @@ export const StakeToken = () => {
     const [withdrawAmount, setWithdrawAmount] = useState(0);
     const [isWithdrawing, setIsWithdrawing] = useState(false); // Mantener esta variable
 
+    // Cargar el balance del token de staking
     const { data: stakingTokenBalance, isLoading: loadingStakeTokenBalance, refetch: refetchStakingTokenBalance } = useReadContract(
         balanceOf,
         {
@@ -30,6 +31,7 @@ export const StakeToken = () => {
         }
     );
 
+    // Cargar el balance del token de recompensa
     const { data: rewardTokenBalance, isLoading: loadingRewardTokenBalance, refetch: refetchRewardTokenBalance } = useReadContract(
         balanceOf,
         {
@@ -41,6 +43,7 @@ export const StakeToken = () => {
         }
     );
 
+    // Obtener información de staking
     const { data: stakeInfo, refetch: refetchStakeInfo } = useReadContract({
         contract: STAKING_CONTRACT,
         method: "getStakeInfo",
@@ -50,12 +53,13 @@ export const StakeToken = () => {
         }
     });
 
+    // Refrescar datos cada 10 segundos
     useEffect(() => {
         const interval = setInterval(() => {
             refetchData();
         }, 10000);
         return () => clearInterval(interval); // Limpiar el intervalo al desmontar el componente
-    }, []);
+    }, [account]); // Asegurarse de que se refresque al cambiar de cuenta
 
     const refetchData = () => {
         refetchStakeInfo();
@@ -81,12 +85,26 @@ export const StakeToken = () => {
                         alignItems: "flex-start",
                         margin: "20px",
                     }}>
-                        {loadingStakeTokenBalance ? (
-                            <p>Staking Token: {stakingTokenBalance !== undefined ? toEther(stakingTokenBalance) : "Loading..."}</p>
-                        ) : null}
-                        {loadingRewardTokenBalance ? (
-                            <p>Reward Token: {rewardTokenBalance !== undefined ? toEther(rewardTokenBalance) : "Loading..."}</p>
-                        ) : null}
+                        {/* Mostrar balance del token de staking */}
+                        <p>
+                            Staking Token: 
+                            {loadingStakeTokenBalance 
+                                ? " Loading..." 
+                                : stakingTokenBalance 
+                                    ? toEther(stakingTokenBalance).toString() 
+                                    : "No Balance"
+                            }
+                        </p>
+                        {/* Mostrar balance del token de recompensa */}
+                        <p>
+                            Reward Token: 
+                            {loadingRewardTokenBalance 
+                                ? " Loading..." 
+                                : rewardTokenBalance 
+                                    ? toEther(rewardTokenBalance).toString() 
+                                    : "No Balance"
+                            }
+                        </p>
                     </div>
 
                     {stakeInfo && (
@@ -121,7 +139,7 @@ export const StakeToken = () => {
                                 }}
                             >Close</button>
                             <h3>Stake</h3>
-                            <p>Balance: {toEther(stakingTokenBalance!)}</p>
+                            <p>Balance: {stakingTokenBalance ? toEther(stakingTokenBalance).toString() : "Loading..."}</p> {/* Manejo de estado de carga */}
                             {stakingState === "init" ? (
                                 <>
                                     <input
